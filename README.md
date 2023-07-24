@@ -2,8 +2,26 @@
 
 ## 实现effect、reactive、依赖收集、依赖触发
 
+### 实现effect
+1. 创建ReactiveEffect实例，传入fn
+2. 立即执行实例的run方法
+
+### reactive
+直接返回一个proxy对象，在get时收集依赖，在set时触发依赖
+
+### 依赖收集
+1. 在创建完响应式数据后，执行effect函数
+2. effect会创建一个ReactiveEffect实例，并立即执行实例的run方法。
+3. run方法会将当前的effect实例保存到一个全局变量(activeEffect)，并立即执行effect传入的fn，触发get。
+4. get，会执行track方法。将activeEffect保存到dep中
+
+### 依赖触发
+1. 遍历所有的effect
+2. 重新执行effect的run方法
+
 ## 实现effect返回runner
 effect执行后，返回一个fn(runner)，runner执行后返回effect传入的fn的值。
+
 
 1. effect直接返回_effect.run.bind(_effect)。_effect.run存在this指向问题，通过bind指定run函数中的this为当前的_effect。
 2. 在run函数中，return this._fn()
