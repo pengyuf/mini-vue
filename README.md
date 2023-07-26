@@ -40,3 +40,10 @@ effect传入第二个可选的参数对象，参数对象包含一个scheduler�
 2. 在stop函数中直接调用传入runner的effect的stop。所有需要再effect首次执行时，将当前的effect挂载到runner.effect上
 3. 同时为了deps可以删除指定的effect，effect需要可以指向包含它的deps。在track函数中，创建activeEffect的deps数组，保存包含它的dep。
 4. 在3创建的deps数组中，循环执行delete操作
+
+## 实现readonly
+只能读取数据，不能修改数据。
+因为在set中不需要触发依赖，所有在get中也不需要进行依赖收集
+
+1. 将reactive()中的，track和trigger删除
+2. 使用TDD思想，重构代码
