@@ -47,3 +47,9 @@ effect传入第二个可选的参数对象，参数对象包含一个scheduler�
 
 1. 将reactive()中的，track和trigger删除
 2. 使用TDD思想，重构代码
+
+## 实现isReactive和isReadonly
+在createGetter中根据传入的isReadonly，可以判断是不是reactive或者readonly。
+
+1. isReactive()。当获取ReactiveFlags.IS_REACTIVE时，返回!isReadonly
+2. isReadonly()。当获取ReactiveFlags.IS_READONLY时，返回isReadonly
