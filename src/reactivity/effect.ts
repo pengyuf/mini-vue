@@ -3,6 +3,7 @@ import { extend } from "../shared";
 class ReactiveEffect {
     private _fn: any;
     deps = []
+    // 是否执行stop的标志位，当执行完一次stop后，不再执行清空操作。优化性能。
     active = true
     onStop?: () => void
     constructor(fn, public scheduler?) {
@@ -11,8 +12,18 @@ class ReactiveEffect {
     }
 
     run() {
+        if (!this.active) {
+            // 当处于stop状态时，再次执行fn，fn会触发get操作，但此时shouldTrack已经置为false，在track中不会在收集
+            return this._fn()
+        }
+
         activeEffect = this
-        return this._fn()
+        // 在非stop状态时，track中都会收集effect
+        shouldTrack = true
+        // 返回_fn的返回值
+        const result = this._fn()
+        shouldTrack = false
+        return result
     }
 
     stop() {
@@ -30,9 +41,11 @@ function clearEffect(effect) {
     effect.deps.forEach((dep: any) => {
         dep.delete(effect)
     })
+    effect.deps.length = 0
 }
 
 let activeEffect
+let shouldTrack
 export function effect(fn, options: any = {}) {
     const _effect = new ReactiveEffect(fn, options.scheduler)
 
@@ -51,6 +64,7 @@ export function stop(runner) {
 
 const targetMap = new Map()
 export function track(target, key) {
+    if (!isTracking()) return
     let depsMap = targetMap.get(target)
     if (!depsMap) {
         depsMap = new Map()
@@ -62,9 +76,13 @@ export function track(target, key) {
         dep = new Set()
         depsMap.set(key, dep)
     }
-    if (!activeEffect) return
+    if(dep.has(activeEffect))return
     dep.add(activeEffect)
     activeEffect.deps.push(dep)
+}
+
+function isTracking() {
+    return shouldTrack && activeEffect !== undefined
 }
 
 export function trigger(target, key) {

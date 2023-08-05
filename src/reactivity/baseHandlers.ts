@@ -9,9 +9,9 @@ function createGetter(isReadonly = false) {
     return function get(target, key) {
         const res = Reflect.get(target, key)
 
-        if(key == ReactiveFlags.IS_REACTIVE){
+        if (key == ReactiveFlags.IS_REACTIVE) {
             return !isReadonly
-        }else if(key == ReactiveFlags.IS_READONLY){
+        } else if (key == ReactiveFlags.IS_READONLY) {
             return isReadonly
         }
 

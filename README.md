@@ -34,16 +34,16 @@ effect传入第二个可选的参数对象，参数对象包含一个scheduler�
 3. 在trigger中判断_effect是否有scheduler，有就执行scheduler，反之，执行run
 
 ## 实现effect的stop
-调用stop后，当响应式对象发生改变时，不再执行effect传入的fn。
+调用stop后，当响应式对象发生改变时，不再触发依赖。
 
-1. 将stop封装到ReactiveEffect中
-2. 在stop函数中直接调用传入runner的effect的stop。所有需要再effect首次执行时，将当前的effect挂载到runner.effect上
+1. 在stop函数中直接调用传入runner的effect的stop。所有需要再effect首次执行时，将当前的effect挂载到runner.effect上
+2. 将stop封装到ReactiveEffect中
 3. 同时为了deps可以删除指定的effect，effect需要可以指向包含它的deps。在track函数中，创建activeEffect的deps数组，保存包含它的dep。
 4. 在3创建的deps数组中，循环执行delete操作
 
 ## 实现readonly
 只能读取数据，不能修改数据。
-因为在set中不需要触发依赖，所有在get中也不需要进行依赖收集
+因为在set中不需要触发依赖，所以在get中也不需要进行依赖收集
 
 1. 将reactive()中的，track和trigger删除
 2. 使用TDD思想，重构代码
@@ -53,3 +53,15 @@ effect传入第二个可选的参数对象，参数对象包含一个scheduler�
 
 1. isReactive()。当获取ReactiveFlags.IS_REACTIVE时，返回!isReadonly
 2. isReadonly()。当获取ReactiveFlags.IS_READONLY时，返回isReadonly
+
+## 优化stop
+更改stop的测试，将obj.prop = 3，改为obj.prop++。
+obj.prop++ 等于 obj.prop = obj.prop + 1。会先触发get操作，然后set。在get时会重新收集effect，导致set时再次触发依赖。
+
+增加一个全局变量shouldTrack，在track时根据shouldTrack判断是否应该收集effect。
+
+__问题：应该在哪里改变shouldTrack的值？__
+ obj.prop = obj.prop + 1。会先触发get操作，然后触发set。set会执行trigger，trigger会重新执行effect的run，run会执行传入的_fn。当
+ 执行_fn时，会重新触发get操作，执行track收集依赖。所以应该在run中改变shouldTrack的值
+
+![image](img/%E4%BC%98%E5%8C%96stop.png)
