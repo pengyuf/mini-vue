@@ -20,4 +20,18 @@ describe("readonly", () => {
 
         expect(console.warn).toBeCalled()
     })
+
+    it("nested readonly", () => {
+        const original = {
+            nested: {
+                foo: 1
+            },
+            array:[{bar:2}]
+        }
+        const wrapped = readonly(original)
+        expect(wrapped).not.toBe(original)
+        expect(isReadonly(wrapped)).toBe(true)
+        expect(isReadonly(original)).toBe(false)
+        expect(isReadonly(wrapped.nested)).toBe(true)
+    })
 })

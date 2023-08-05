@@ -65,3 +65,22 @@ __问题：应该在哪里改变shouldTrack的值？__
  执行_fn时，会重新触发get操作，执行track收集依赖。所以应该在run中改变shouldTrack的值
 
 ![image](img/%E4%BC%98%E5%8C%96stop.png)
+
+
+## 实现 reactive 和 readonly 嵌套对象转换功能
+当传入的对象，包含嵌套的对象时，也需要把嵌套的对象转换为响应式。
+```
+        const original = {
+            nested: {
+                foo: 1
+            },
+            array:[{bar:2}]
+        }
+        const observed = reactive(original)
+```
+在get操作中，判断返回的res是否为对象，如果是的话，继续执行reactive。
+```
+        if(isObject(res)){
+            return isReadonly?readonly(res):reactive(res)
+        }
+```
