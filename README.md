@@ -88,3 +88,12 @@ __问题：应该在哪里改变shouldTrack的值？__
 ## shallowReadonly
 shallowReadonly只对表层的对象进行响应式转换，对内部嵌套的对象不进行转换
 
+
+## isProxy
+检测对象是否是由reactive或者readonly创建出来的
+```
+export function isProxy(value){
+    return isReactive(value) || isReadonly(value)
+}
+```
+直接调用已有的isReactive和isReadonly

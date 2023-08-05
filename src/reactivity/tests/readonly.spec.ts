@@ -1,4 +1,4 @@
-import { isReadonly, readonly } from "../reactive"
+import { isReadonly, readonly, isProxy } from "../reactive"
 
 describe("readonly", () => {
     it("happy path", () => {
@@ -7,6 +7,7 @@ describe("readonly", () => {
 
         expect(original).not.toBe(wrapped)
         expect(isReadonly(wrapped)).toBe(true)
+        expect(isProxy(wrapped)).toBe(true)
         expect(wrapped.foo).toBe(1)
     })
 
@@ -26,7 +27,7 @@ describe("readonly", () => {
             nested: {
                 foo: 1
             },
-            array:[{bar:2}]
+            array: [{ bar: 2 }]
         }
         const wrapped = readonly(original)
         expect(wrapped).not.toBe(original)
