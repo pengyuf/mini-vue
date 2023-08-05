@@ -97,3 +97,7 @@ export function isProxy(value){
 }
 ```
 直接调用已有的isReactive和isReadonly
+
+## 实现ref功能
+待写
+![image](img/实现ref功能.jpg)
