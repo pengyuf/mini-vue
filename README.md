@@ -84,3 +84,7 @@ __问题：应该在哪里改变shouldTrack的值？__
             return isReadonly?readonly(res):reactive(res)
         }
 ```
+
+## shallowReadonly
+shallowReadonly只对表层的对象进行响应式转换，对内部嵌套的对象不进行转换
+
