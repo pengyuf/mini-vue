@@ -1,26 +1,18 @@
-import { mutableHandler, readonlyHandler } from "./baseHandlers"
+import { track, trigger } from "./effect"
 
-export const enum ReactiveFlags {
-    IS_REACTIVE = '__v_isReactive',
-    IS_READONLY = '__v_isReadonly'
-}
-
-export function reactive(raw) {
-    return createActiveObject(raw, mutableHandler)
-}
-
-export function readonly(raw) {
-    return createActiveObject(raw, readonlyHandler)
-}
-
-export function isReactive(value) {
-    return !!value[ReactiveFlags.IS_REACTIVE]
-}
-
-export function isReadonly(value) {
-    return !!value[ReactiveFlags.IS_READONLY]
-}
-
-function createActiveObject(raw: any, baseHandler) {
-    return new Proxy(raw, baseHandler)
+export function reactive(raw){
+    return new Proxy(raw,{
+        get(target,key){
+            const res = Reflect.get(target,key)
+            // 收集依赖
+            track(target,key)
+            return res
+        },
+        set(target,key,value){
+            const res = Reflect.set(target,key,value)
+            // 触发依赖
+            trigger(target,key)
+            return res
+        }
+    })
 }
