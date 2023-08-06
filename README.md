@@ -99,5 +99,6 @@ export function isProxy(value){
 直接调用已有的isReactive和isReadonly
 
 ## 实现ref功能
-待写
 ![image](img/实现ref功能.jpg)
+执行effect时会执行run，设置activeEffect的值。
+定义一个refImpl类。在get时收集effect到dep中，在set时从dep中取出effect，重新触发effect。
