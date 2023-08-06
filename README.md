@@ -107,3 +107,16 @@ export function isProxy(value){
 ## 实现isRef和unRef
 isRef：判断是否是一个ref。在refImpl中增加一个标志位__v_isRef，用来表示这是一个ref
 unRef：等价于isRef(val) ? val.value : val。先通过isRef判断是不是一个ref，如果是的话返回ref.value，否则直接返回ref
+
+
+## 实现proxyRefs
+```
+user = {
+            age: ref(10),
+            name: 'peng'
+       }
+const proxyUser = proxyRefs(user)
+```
+当传入的对象的某些属性是ref时，通过proxyRefs，可以直接取出ref的值，不在需要通过ref.value获取值。
+设置时，同时改变proxyUser.age和proxyUser.age.value
+![image](img/proxyRefs.png)

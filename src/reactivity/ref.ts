@@ -39,10 +39,25 @@ export function ref(value) {
     return new refImpl(value)
 }
 
-export function isRef(ref){
+export function isRef(ref) {
     return !!ref.__v_isRef
 }
 
-export function unRef(ref){
-    return isRef(ref)?ref.value:ref
+export function unRef(ref) {
+    return isRef(ref) ? ref.value : ref
+}
+
+export function proxyRefs(object) {
+    return new Proxy(object, {
+        get: (target, key) => {
+            return unRef(Reflect.get(target, key))
+        },
+        set: (target, key, value) => {
+            if (isRef(target[key]) && !isRef(value)) {
+                return target[key].value = value
+            } else {
+                return Reflect.set(target, key, value)
+            }
+        }
+    })
 }
