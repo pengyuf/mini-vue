@@ -102,3 +102,8 @@ export function isProxy(value){
 ![image](img/实现ref功能.jpg)
 执行effect时会执行run，设置activeEffect的值。
 定义一个refImpl类。在get时收集effect到dep中，在set时从dep中取出effect，重新触发effect。
+
+
+## 实现isRef和unRef
+isRef：判断是否是一个ref。在refImpl中增加一个标志位__v_isRef，用来表示这是一个ref
+unRef：等价于isRef(val) ? val.value : val。先通过isRef判断是不是一个ref，如果是的话返回ref.value，否则直接返回ref

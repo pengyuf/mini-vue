@@ -5,6 +5,7 @@ import { reactive } from "./reactive";
 class refImpl {
     private _value: any;
     public dep;
+    public __v_isRef = true
     private _rawValue: any;
     constructor(value) {
         // 判断value是否是对象，如果是对象的话，调用reactive，转换为响应式对象
@@ -36,4 +37,12 @@ function convert(value) {
 
 export function ref(value) {
     return new refImpl(value)
+}
+
+export function isRef(ref){
+    return !!ref.__v_isRef
+}
+
+export function unRef(ref){
+    return isRef(ref)?ref.value:ref
 }
