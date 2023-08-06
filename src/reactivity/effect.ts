@@ -1,6 +1,6 @@
 import { extend } from "../shared";
 
-class ReactiveEffect {
+export class ReactiveEffect {
     private _fn: any;
     deps = []
     // 是否执行stop的标志位，当执行完一次stop后，不再执行清空操作。优化性能。

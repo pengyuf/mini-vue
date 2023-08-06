@@ -120,3 +120,6 @@ const proxyUser = proxyRefs(user)
 当传入的对象的某些属性是ref时，通过proxyRefs，可以直接取出ref的值，不在需要通过ref.value获取值。
 设置时，同时改变proxyUser.age和proxyUser.age.value
 ![image](img/proxyRefs.png)
+
+## 实现computed
+![image](img/computed.jpg)
