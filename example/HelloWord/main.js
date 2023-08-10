@@ -1,3 +1,5 @@
-import {App} from './App'
+import { App } from './App.js'
+import { createApp } from '../../lib/guide-mini-vue.esm.js'
 
-createApp(App).mount('#app')
+const rootContainer = document.getElementById('#app')
+createApp(App).mount(rootContainer)
