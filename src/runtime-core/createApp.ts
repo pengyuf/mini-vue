@@ -6,8 +6,8 @@ export function createApp(rootComponent) {
         mount(rootContainer) {
             // 所有的操作都是基于vnode，所以先要将component转为vnode
             const vnode = createVNode(rootComponent)
-            
-            render(vnode,rootContainer)
+
+            render(vnode, rootContainer)
         }
     }
 }
