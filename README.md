@@ -123,3 +123,6 @@ const proxyUser = proxyRefs(user)
 
 ## 实现computed
 ![image](img/computed.jpg)
+
+## 实现组件代理对象
+![image](img/组件代理对象-01.png)
