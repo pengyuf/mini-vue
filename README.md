@@ -126,3 +126,11 @@ const proxyUser = proxyRefs(user)
 
 ## 实现组件代理对象
 ![image](img/组件代理对象-01.png)
+
+## 实现组件props功能
+1. 可以通过setup接收props
+2. 可以通过this获取到props
+3. props是可读的(使用shallowReadonly)
+![image](img/实现组件props.jpg)
+
+
