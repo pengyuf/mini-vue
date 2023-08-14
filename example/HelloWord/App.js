@@ -8,7 +8,10 @@ export const App = {
         return h('div',
             {
                 id: 'root',
-                class: ['red', 'hard']
+                class: ['red', 'hard'],
+                onClick() {
+                    console.log('click')
+                }
             },
             `hi,` + this.msg
             // 'hi,vue'
