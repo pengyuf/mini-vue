@@ -14,7 +14,11 @@ export const App = {
                     console.log('click')
                 }
             },
-            [h('div', {}, `hi,` + this.msg), h(Foo, { count: 1 })]
+            [h('div', {}, `hi,` + this.msg), h(Foo, {
+                onAdd: (a,b) => {
+                    console.log('onAdd',a,b)
+                }
+            })]
             // 'hi,vue'
             // [h('p',{class:'red'},'hi'),h('p',{class:'blue'},'vue')]
         )
