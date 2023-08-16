@@ -124,8 +124,18 @@ const proxyUser = proxyRefs(user)
 ## 实现computed
 ![image](img/computed.jpg)
 
+## 实现初始化element主流程
+![image](img/初始化element主流程.png)
+
+
 ## 实现组件代理对象
-![image](img/组件代理对象-01.png)
+创建一个代理对象，对instance进行代理，在render，使用this时触发这个代理对象的get，获取返回值
+![image](img/组件代理对象.png)
+
+
+## 注册事件
+根据事件的特殊命名规则(on+Event)，在mountElement中，判断key的格式是否是on+Event的格式，如果是的话，给el注册相应的事件
+![image](img/注册事件.png)
 
 ## 实现组件props功能
 1. 可以通过setup接收props

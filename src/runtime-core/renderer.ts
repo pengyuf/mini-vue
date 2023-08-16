@@ -29,6 +29,7 @@ function mountComponent(initialVNode, container) {
 
 function setupRenderEffect(instance: any, initialVNode, container: any) {
     const { proxy } = instance
+    // 调用render，改变render的this
     const subTree = instance.render.call(proxy)
 
     patch(subTree, container)
