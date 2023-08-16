@@ -144,3 +144,8 @@ const proxyUser = proxyRefs(user)
 ![image](img/实现组件props.jpg)
 
 
+## 组件emit
+![image](img/组件emit.png)
+
+## 组件slots
+![image](img/组件slots.png)
