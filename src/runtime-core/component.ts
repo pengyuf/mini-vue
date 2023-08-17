@@ -40,10 +40,12 @@ function setupStatefulComponent(instance: any) {
 
     // 执行setup，获取返回值
     if (setup) {
+        setCurrentInstance(instance)
         // props只是可读的
         const setupResult = setup(shallowReadonly(instance.props), {
             emit: instance.emit
         })
+        setCurrentInstance(null)
         // 处理setup返回值
         handleSetupResult(setupResult, instance)
     }
@@ -66,3 +68,11 @@ function finishComponentSetup(instance) {
     }
 }
 
+let currentInstance = null
+export function getCurrentInstance() {
+    return currentInstance
+}
+
+function setCurrentInstance(instance) {
+    currentInstance = instance
+}

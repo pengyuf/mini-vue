@@ -149,3 +149,8 @@ const proxyUser = proxyRefs(user)
 
 ## 组件slots
 ![image](img/组件slots.png)
+
+## 实现getCurrentInstace
+getCurrentInstace会返回当前的组件实例
+
+实现方式：定义一个全局变量currentInstance，在setup中对currentInstance进行赋值(currentInstance = instance)

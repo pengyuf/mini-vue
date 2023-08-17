@@ -15,8 +15,8 @@ export const App = {
                 }
             },
             [h('div', {}, `hi,` + this.msg), h(Foo, {
-                onAdd: (a,b) => {
-                    console.log('onAdd',a,b)
+                onAdd: (a, b) => {
+                    console.log('onAdd', a, b)
                 }
             })]
             // 'hi,vue'
