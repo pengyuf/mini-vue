@@ -154,3 +154,6 @@ const proxyUser = proxyRefs(user)
 getCurrentInstace会返回当前的组件实例
 
 实现方式：定义一个全局变量currentInstance，在setup中对currentInstance进行赋值(currentInstance = instance)
+
+## 实现provide/inject
+![image](img/apiInject.png)
