@@ -157,3 +157,6 @@ getCurrentInstace会返回当前的组件实例
 
 ## 实现provide/inject
 ![image](img/apiInject.png)
+
+## 实现自定义渲染器 custom renderer
+使用一个createRender传入渲染函数，返回一个createApp。通过传入的createElement,patchProp,insert抹平各个平台对节点操作的差异
