@@ -4,15 +4,19 @@ function createElement(type) {
     return document.createElement(type)
 }
 
-function patchProp(el, key, val) {
+function patchProp(el, key, prevVal, nextVal) {
     // onClick : 判断是否是一个事件
     const isOn = (key: string) => /^on[A-Z]/.test(key)
     if (isOn(key)) {
         // 注册事件
         const event = key.slice(2).toLowerCase()
-        el.addEventListener(event, val)
+        el.addEventListener(event, nextVal)
     } else {
-        el.setAttribute(key, val)
+        if (nextVal === null || nextVal === undefined) {
+            el.removeAttribute(key)
+        } else {
+            el.setAttribute(key, nextVal)
+        }
     }
 }
 
