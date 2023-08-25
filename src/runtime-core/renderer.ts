@@ -3,6 +3,7 @@ import { EMPTY_OBJ, isObject } from "../shared/index"
 import { ShapeFlags } from "../shared/ShapeFlags"
 import { createComponentInstance, setupComponent } from "./component"
 import { createAppAPI } from "./createApp"
+import { queueJobs } from "./scheduler"
 import { shouldUpdateComponent } from "./updateComponentUtils"
 import { Fragment, Text } from "./vnode"
 
@@ -96,6 +97,10 @@ export function createRenderer(options) {
                 instance.subTree = subTree
 
                 patch(prevSubTree, subTree, container, instance, anchor)
+            }
+        }, {
+            scheduler() {
+                queueJobs(instance.update)
             }
         })
     }
