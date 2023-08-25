@@ -3,6 +3,7 @@ import { EMPTY_OBJ, isObject } from "../shared/index"
 import { ShapeFlags } from "../shared/ShapeFlags"
 import { createComponentInstance, setupComponent } from "./component"
 import { createAppAPI } from "./createApp"
+import { shouldUpdateComponent } from "./updateComponentUtils"
 import { Fragment, Text } from "./vnode"
 
 export function createRenderer(options) {
@@ -41,18 +42,34 @@ export function createRenderer(options) {
     }
 
     function processComponent(n1, n2, container, parentComponent, anchor) {
-        mountComponent(n2, container, parentComponent, anchor)
+        if (!n1) {
+            // 创建新的
+            mountComponent(n2, container, parentComponent, anchor)
+        } else {
+            // 更新已有的组件
+            updateComponent(n1, n2)
+        }
+    }
+
+    function updateComponent(n1, n2) {
+        if (shouldUpdateComponent(n1, n2)) {
+            const instance = (n2.component = n1.component)
+            instance.next = n2
+            instance.update()
+        }else{
+            
+        }
     }
 
     function mountComponent(initialVNode, container, parentComponent, anchor) {
-        const instance = createComponentInstance(initialVNode, parentComponent)
+        const instance = (initialVNode.component = createComponentInstance(initialVNode, parentComponent))
 
         setupComponent(instance)
         setupRenderEffect(instance, initialVNode, container, anchor)
     }
 
     function setupRenderEffect(instance: any, initialVNode, container: any, anchor) {
-        effect(() => {
+        instance.update = effect(() => {
             if (!instance.isMounted) {
                 // 初始化
                 const { proxy } = instance
@@ -66,6 +83,11 @@ export function createRenderer(options) {
                 instance.isMounted = true
             } else {
                 // 更新
+                const { next, vnode } = instance
+                if (next) {
+                    next.el = vnode.el
+                    updateComponentPreRender(instance, next)
+                }
                 const { proxy } = instance
                 // 调用render，改变render的this
                 const subTree = instance.render.call(proxy)
@@ -75,6 +97,12 @@ export function createRenderer(options) {
                 patch(prevSubTree, subTree, container, instance, anchor)
             }
         })
+    }
+
+    function updateComponentPreRender(instance, nextVNode) {
+        instance.vnode = nextVNode
+        instance.next = null
+        instance.props = nextVNode.props
     }
 
     function processElement(n1, n2: any, container: any, parentComponent, anchor) {
@@ -207,7 +235,7 @@ export function createRenderer(options) {
                 if (prevChild.key !== null) {
                     newIndex = keyToNewIndexMap.get(prevChild.key)
                 } else {
-                    for (let j = s2; j < e2; j++) {
+                    for (let j = s2; j <= e2; j++) {
                         if (isSomeVNodeType(prevChild, c2[j])) {
                             newIndex = j
                             break
