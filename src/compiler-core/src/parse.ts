@@ -10,10 +10,45 @@ export function baseParse(content: string) {
 
 function parseChildren(context: any) {
     const nodes: any[] = []
-    const node = parseInterpolation(context)
+    let node
+    const s = context.source
+    if (s.startsWith('{{')) {
+        //  解析插值
+        node = parseInterpolation(context)
+    } else if (s[0] === '<') {
+        if (/[a-z]/i.test(s[1])) {
+            // 解析element
+            node = parseElement(context)
+        }
+    }
     nodes.push(node)
 
     return nodes
+}
+
+const enum TagType{
+    Start,
+    End
+}
+
+function parseElement(context: any) {
+    const element = parseTag(context,TagType.Start)
+    parseTag(context,TagType.End)
+    return element
+}
+
+function parseTag(context: any,type:TagType) {
+    // 解析tag
+    const match: any = /^<\/?([a-z]*)/i.exec(context.source)
+    const tag = match[1]
+    // 删除处理完的代码
+    advanceBy(context, match[0].length)
+    advanceBy(context, 1)
+    if(type === TagType.End)return
+    return {
+        type: NodeTypes.ELEMENT,
+        tag
+    }
 }
 
 /**
@@ -33,10 +68,10 @@ function parseInterpolation(context) {
     // 获取插值的内容
     const rawContentLength = closeIndex - openDelimiter.length
 
-    const rawContent = context.source.slice(0,rawContentLength)
+    const rawContent = context.source.slice(0, rawContentLength)
     const content = rawContent.trim()
 
-    advanceBy(context,rawContentLength + closeDelimiter.length)
+    advanceBy(context, rawContentLength + closeDelimiter.length)
 
     return {
         type: NodeTypes.INTERPOLATION,
@@ -80,3 +115,4 @@ function createParseContext(content: string) {
         source: content
     }
 }
+
