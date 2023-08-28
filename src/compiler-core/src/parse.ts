@@ -21,9 +21,30 @@ function parseChildren(context: any) {
             node = parseElement(context)
         }
     }
+
+    if (!node) {
+        // 默认当做text处理
+        node = parseText(context)
+    }
+
     nodes.push(node)
 
     return nodes
+}
+
+
+function parseText(context: any) {
+    const content = parseTextData(context, context.source.length)
+    return {
+        type: NodeTypes.TEXT,
+        content
+    }
+}
+
+function parseTextData(context, length) {
+    const content = context.source.slice(0, length)
+    advanceBy(context, length)
+    return content
 }
 
 const enum TagType {
@@ -68,10 +89,10 @@ function parseInterpolation(context) {
     // 获取插值的内容
     const rawContentLength = closeIndex - openDelimiter.length
 
-    const rawContent = context.source.slice(0, rawContentLength)
+    const rawContent = parseTextData(context, rawContentLength)
     const content = rawContent.trim()
 
-    advanceBy(context, rawContentLength + closeDelimiter.length)
+    advanceBy(context, closeDelimiter.length)
 
     return {
         type: NodeTypes.INTERPOLATION,
@@ -115,4 +136,6 @@ function createParseContext(content: string) {
         source: content
     }
 }
+
+
 
