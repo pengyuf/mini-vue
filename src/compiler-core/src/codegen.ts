@@ -1,4 +1,5 @@
 import { NodeTypes } from "./ast"
+import { CREATE_ELEMENT_VNODE } from "./runtimeHelpers"
 import { helperMapName, TO_DISPLAY_STRING } from "./runtimeHelpers"
 
 export function generate(ast) {
@@ -46,9 +47,18 @@ function genNode(node: any, context) {
         case NodeTypes.SIMPLE_EXPRESSION:
             getExpression(node, context)
             break;
+        case NodeTypes.ELEMENT:
+            genElement(node, context)
+            break;
         default:
             break;
     }
+}
+
+function genElement(node: any, context: any) {
+    const { push, helper } = context
+    const {tag} = node
+    push(`'${helper(CREATE_ELEMENT_VNODE)}('${tag}')'`)
 }
 
 function genText(node: any, context: any) {
@@ -57,7 +67,7 @@ function genText(node: any, context: any) {
 }
 
 function getInterpolation(node: any, context: any) {
-    const { push ,helper} = context
+    const { push, helper } = context
     push(`${helper(TO_DISPLAY_STRING)}(`)
     genNode(node.content, context)
     push(`)`)
@@ -75,7 +85,7 @@ function createCodegenContext() {
         push(source) {
             context.code += source
         },
-        helper(key){
+        helper(key) {
             return `_${helperMapName[key]}`
         }
     }
