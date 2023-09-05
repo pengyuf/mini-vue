@@ -38,9 +38,9 @@ function isEnd(context, ancestors) {
     const s = context.source
 
     if (s.startsWith('</')) {
-        for (let i = ancestors.length-1; i >= 0; i--) {
+        for (let i = ancestors.length - 1; i >= 0; i--) {
             const tag = ancestors[i].tag
-            if (startsWithEndTagOpen(s,tag)) {
+            if (startsWithEndTagOpen(s, tag)) {
                 return true
             }
         }
@@ -68,7 +68,7 @@ function parseText(context: any) {
 
 
     const content = parseTextData(context, endIndex)
-    console.log('content------------', content)
+    // console.log('content------------', content)
     return {
         type: NodeTypes.TEXT,
         content
@@ -168,7 +168,8 @@ function advanceBy(context, length) {
  */
 function createRoot(children) {
     return {
-        children
+        children,
+        type: NodeTypes.ROOT
     }
 }
 
